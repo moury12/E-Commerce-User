@@ -153,10 +153,10 @@ class _LoginPageState extends State<LoginPage> {
           credential = await AuthService.login(email, password);
         } else {
           //reg for anonymous user
-         if(AuthService.currentUser!.isAnonymous){
+         if(AuthService.currentUser!=null){
            final credential =
            EmailAuthProvider.credential(email: email, password: password);
-           registerAnonymousUser(credential);
+          await registerAnonymousUser(credential);
          }
          else{
            //normal reg
@@ -184,29 +184,35 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _signInWithGoogle() async {
-   try{
-     final credential = await AuthService.signInWithGoogle();
-     final userExist = await userProvider.doesUserExist(credential.user!.uid);
-     if (!userExist) {
-       EasyLoading.show(status: 'redirecting...');
-       final userModel = UserModel(
-           userId: credential.user!.uid,
-           email: credential.user!.email!,
-           displayName: credential.user!.displayName,
-           imageUrl: credential.user!.photoURL,
-           userCreationTime: Timestamp.fromDate(DateTime.now()));
-       await userProvider.addUser(userModel);
-       EasyLoading.dismiss();
+    if(AuthService.currentUser!=null){
+      final idToken = await AuthService.currentUser!.getIdToken();
+      final credential = GoogleAuthProvider.credential(idToken: idToken);
+    }
+   else{
+      try{
+        final credential = await AuthService.signInWithGoogle();
+        final userExist = await userProvider.doesUserExist(credential.user!.uid);
+        if (!userExist) {
+          EasyLoading.show(status: 'redirecting...');
+          final userModel = UserModel(
+              userId: credential.user!.uid,
+              email: credential.user!.email!,
+              displayName: credential.user!.displayName,
+              imageUrl: credential.user!.photoURL,
+              userCreationTime: Timestamp.fromDate(DateTime.now()));
+          await userProvider.addUser(userModel);
+          EasyLoading.dismiss();
 
-     }
-     if(mounted){
-       Navigator.pushReplacementNamed(context, LauncherPage.routeName);
-     }
-   }
-   catch(error){
-     EasyLoading.dismiss();
-rethrow;
-   }
+        }
+        if(mounted){
+          Navigator.pushReplacementNamed(context, LauncherPage.routeName);
+        }
+      }   catch(error){
+        EasyLoading.dismiss();
+        rethrow;
+      }
+    }
+
   }
 
   void loginAsGuest() {
@@ -218,7 +224,7 @@ rethrow;
     });
        
   }
-  void registerAnonymousUser(AuthCredential credential) async{
+  Future<void> registerAnonymousUser(AuthCredential credential) async{
     try {
       final userCredential = await FirebaseAuth.instance.currentUser
           ?.linkWithCredential(credential);
@@ -230,7 +236,7 @@ rethrow;
           Timestamp.fromDate(userCredential.user!.metadata.creationTime!),
         );
         await userProvider.addUser(userModel);
-        Navigator.pushReplacementNamed(context, LauncherPage.routeName);
+
       }
     } on FirebaseAuthException catch (e) {
       switch (e.code) {

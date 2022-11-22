@@ -196,62 +196,64 @@ Navigator.pushNamed(context, OtpVerification.routeName,arguments: value);
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(4),
           color: Colors.pinkAccent.shade100),
-      child: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8),
-            child: Card(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(50)),
-                child: userProvider.userModel!.imageUrl == null
-                    ? ClipOval(
-                      child: Image.asset(
-                          'assets/s.png',
-                          height: 100,
-                          width: 100,
-                          fit: BoxFit.cover,
-                        ),
-                    )
-                    : ClipOval(
-                        child: CachedNetworkImage(
-                          filterQuality: FilterQuality.none,
-                          height: 100,
-                          width: 100,
-                          fit: BoxFit.cover,
-                          imageUrl: userProvider.userModel!
-                              .imageUrl!,
-                          placeholder: (context, url) =>
-                              const Center(child: CircularProgressIndicator()),
-                          errorWidget: (context, url, error) =>
-                              const Icon(Icons.error),
-                        ),
-                      )),
-          ),
-          Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    userProvider.userModel!.displayName ?? 'No Display Name',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                  ),userProvider.userModel!.displayName==null ?
-                  IconButton(onPressed: (){
-                    showSingleTextInputDialog(context: context, title: "User Name", onSubmit: (value){
-                      userProvider.updateUserField(userFieldDisplayName, value);
-                    });
-                  },  icon: Icon(Icons.edit,size:15,))
-                :Text('')],
-              ),
+      child: SingleChildScrollView(  scrollDirection: Axis.horizontal,
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8),
+              child: Card(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(50)),
+                  child: userProvider.userModel!.imageUrl == null
+                      ? ClipOval(
+                        child: Image.asset(
+                            'assets/s.png',
+                            height: 100,
+                            width: 100,
+                            fit: BoxFit.cover,
+                          ),
+                      )
+                      : ClipOval(
+                          child: CachedNetworkImage(
+                            filterQuality: FilterQuality.none,
+                            height: 100,
+                            width: 100,
+                            fit: BoxFit.cover,
+                            imageUrl: userProvider.userModel!
+                                .imageUrl!,
+                            placeholder: (context, url) =>
+                                const Center(child: CircularProgressIndicator()),
+                            errorWidget: (context, url, error) =>
+                                const Icon(Icons.error),
+                          ),
+                        )),
+            ),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      userProvider.userModel!.displayName ?? 'No Display Name',
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
+                    ),userProvider.userModel!.displayName==null ?
+                    IconButton(onPressed: (){
+                      showSingleTextInputDialog(context: context, title: "User Name", onSubmit: (value){
+                        userProvider.updateUserField(userFieldDisplayName, value);
+                      });
+                    },  icon: Icon(Icons.edit,size:15,))
+                  :Text('')],
+                ),
 
-              Text(
-                userProvider.userModel!.email ?? 'No email',
-                style: TextStyle(fontWeight: FontWeight.w400, fontSize: 10),
-              )
-            ],
-          )
-        ],
+                Text(
+                  userProvider.userModel!.email ?? 'No email',
+                  style: TextStyle(fontWeight: FontWeight.w400, fontSize: 10),
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

@@ -1,4 +1,4 @@
-import 'package:ecommerce_user/auth/authservice.dart';
+
 import 'package:ecommerce_user/pages/launcher_page.dart';
 import 'package:ecommerce_user/pages/otp_verification_page.dart';
 import 'package:ecommerce_user/pages/user_profile.dart';
@@ -45,28 +45,28 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
 WidgetsBinding.instance.removeObserver(this);
 super.dispose();
   }
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
- switch(state){
-   case AppLifecycleState.paused:
-     break;
-     case AppLifecycleState.inactive:
-       AuthService.currentUser!.isAnonymous?
-    AuthService.logout():
-           null;
-     break;
-     case AppLifecycleState.resumed:
-     break;
-     case AppLifecycleState.detached:
-     break;
- }
-    super.didChangeAppLifecycleState(state);
-  }
+ //  @override
+ //  void didChangeAppLifecycleState(AppLifecycleState state) {
+ // switch(state){
+ //   case AppLifecycleState.paused:
+ //     break;
+ //     case AppLifecycleState.inactive:
+ //       AuthService.currentUser!.isAnonymous?
+ //    AuthService.logout():
+ //           null;
+ //     break;
+ //     case AppLifecycleState.resumed:
+ //     break;
+ //     case AppLifecycleState.detached:
+ //     break;
+ // }
+ //    super.didChangeAppLifecycleState(state);
+ //  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'E-Commerce(Admin)',
+      title: 'E-Commerce(User)',
       theme: ThemeData(
 textTheme: GoogleFonts.nanumMyeongjoTextTheme(),
         primarySwatch: Colors.pink,

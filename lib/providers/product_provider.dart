@@ -1,5 +1,9 @@
 import 'dart:io';
 
+import 'package:ecommerce_user/models/comment_model.dart';
+import 'package:ecommerce_user/models/rating_model.dart';
+import 'package:ecommerce_user/models/user_model.dart';
+import 'package:ecommerce_user/utils/helper_functions.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
@@ -52,5 +56,32 @@ class ProductProvider extends ChangeNotifier {
 
   Future<void> deleteImage(String downloadUrl) {
     return FirebaseStorage.instance.refFromURL(downloadUrl).delete();
+  }
+
+  Future<void> addRating(String productId, double userRateing,UserModel usermodel) async{
+    final ratingmodel= RatingModel(
+        ratingId: usermodel.userId, userModel: usermodel, productId: productId, rating: userRateing);
+    await DbHelper.addRating(ratingmodel);
+    final snapshot= await DbHelper.getRatingsByProduct(productId);
+    final ratingList= List.generate(snapshot.docs.length,
+            (index) => RatingModel.fromMap(snapshot.docs[index].data()));
+    double totalRating =0.0;
+for(var model in ratingList){
+  totalRating +=model.rating;
+}
+final avgRating= totalRating/ratingList.length;
+return DbHelper.updateProductField(productId, { productFieldAvgRating:avgRating});
+  }
+
+  Future<void> addComment(String pid, String comment, UserModel userModel) async {
+final commentmodel= CommentModel(commentId: DateTime.now().microsecondsSinceEpoch.toString(), userModel: userModel,
+  comment: comment,productId: pid,date:getFormattedDate(DateTime.now(),pattern: 'dd/MM/yyyy')
+);
+return DbHelper.addComment(commentmodel);
+  }
+
+ Future<List<CommentModel>> getAllcommentsByProduct(String productId) async{
+final snapshot = await DbHelper.getAllcommentsByProduct(productId);
+return List.generate(snapshot.docs.length, (index) => CommentModel.fromMap(snapshot.docs[index].data()));
   }
 }
