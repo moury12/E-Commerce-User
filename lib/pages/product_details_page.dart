@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ecommerce_user/auth/authservice.dart';
 import 'package:ecommerce_user/models/comment_model.dart';
+import 'package:ecommerce_user/providers/shopping_cart_provider.dart';
 import 'package:ecommerce_user/providers/user_provider.dart';
 import 'package:ecommerce_user/utils/helper_functions.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,9 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:provider/provider.dart';
 
+import '../models/notification_model.dart';
 import '../models/product_model.dart';
+import '../providers/notification_provider.dart';
 import '../providers/product_provider.dart';
 import '../utils/constants.dart';
 
@@ -105,15 +108,30 @@ setState(() {
     ),
   ),
 ),
-
+          ButtonBar(
+          alignment: MainAxisAlignment.end,
+            buttonMinWidth: 10,
+            children: [
+              IconButton(onPressed: (){}, icon: Icon(Icons.favorite_border)),
+              Consumer<CartProvider>(builder:(context, provider, child){
+                final isInCart=provider.isProductInCart(productModel.productId!);
+                return IconButton(onPressed: (){
+                  if(isInCart){
+                    provider.removeFromCart(productModel.productId!);
+                  }
+                  else{
+                    provider.addToCart(productModel);
+                  }
+                }, icon: Icon(isInCart?Icons.remove_shopping_cart :Icons.shopping_cart_outlined));}  ),
+                TextButton.icon(onPressed: (){}, icon: Icon(Icons.shopping_bag_outlined), label: Text('Buy Now'),)
+            ],
+          ),
           ListTile(
-            title: Text(productModel.productName),
+            title: Text(productModel.productName,style: TextStyle(fontWeight: FontWeight.bold,color: Colors.deepPurple),),
             subtitle: Text(productModel.category.categoryName),
           ),
-         productModel.shortDescription==null?Padding(
-           padding: const EdgeInsets.all(8.0),
-           child: Text(''),
-         ):Padding(
+         productModel.shortDescription==null?
+           Text(''):Padding(
            padding: const EdgeInsets.all(8.0),
            child: Text(productModel.shortDescription!),
          ),
@@ -178,11 +196,16 @@ controller: txtcontroller,
                         return;
                       }
                       EasyLoading.show(status: 'please wait');
-                      await productProvider.addComment(productModel.productId!,txtcontroller.text,context.read<UserProvider>().userModel!);
+                      final commentModel= CommentModel(commentId: DateTime.now().microsecondsSinceEpoch.toString(), userModel: context.read<UserProvider>().userModel!,
+                          comment: txtcontroller.text,productId: productModel.productId!,date:getFormattedDate(DateTime.now(),pattern: 'dd/MM/yyyy')
+                      );
+                      await productProvider.addComment(commentModel);
                       EasyLoading.dismiss();
                       focusNode.unfocus();
                       txtcontroller.clear();
                       showMsg(context, 'Thanks for your comment, your comment is waiting for admin approval');
+                      final notificationModel =NotificationModel(id: DateTime.now().microsecondsSinceEpoch.toString(), type: NotificationType.comment, message: 'Product ${productModel.productName} has a new comment which is waiting for admin approval',commentModel:commentModel );
+                      await Provider.of<NotificationProvider>(context,listen: false).addNotification(notificationModel);
                     }, child: Text('Submit'),style: ButtonStyle(foregroundColor: MaterialStatePropertyAll<Color>(Colors.deepPurple)),)
                   ]
               ),
@@ -246,6 +269,7 @@ subtitle: Text(comment.date),
 },)
         ],
       ),
+
     );
   }
 }

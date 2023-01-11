@@ -1,4 +1,4 @@
-const String collectionOrderConstant='Utils';
+const String collectionOrderConstant='Orders';
 const String documentOrderConstant='OrderConstants';
 const String orderConFieldDiscount='discount';
 const String orderConFieldVat='vat';

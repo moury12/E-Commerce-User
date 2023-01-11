@@ -1,15 +1,13 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ecommerce_user/customwidgets/cart_bubble_view.dart';
 import 'package:ecommerce_user/customwidgets/product_grid_view.dart';
+import 'package:ecommerce_user/providers/shopping_cart_provider.dart';
 import 'package:ecommerce_user/providers/user_provider.dart';
-
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import '../customwidgets/main_drawer.dart';
 import '../models/category_model.dart';
 import '../providers/order_provider.dart';
 import '../providers/product_provider.dart';
-import 'product_details_page.dart';
 
 class ViewProductPage extends StatefulWidget {
   static const String routeName = '/viewproduct';
@@ -28,6 +26,8 @@ class _ViewProductPageState extends State<ViewProductPage> {
     Provider.of<ProductProvider>(context, listen: false).getAllProducts();
     Provider.of<OrderProvider>(context, listen: false).getOrderConstants();
     Provider.of<UserProvider>(context, listen: false).getUserInfo();
+    Provider.of<CartProvider>(context, listen: false).getAllCartItems();
+    Provider.of<OrderProvider>(context,listen: false).getAllOrderByUser();
     super.didChangeDependencies();
   }
 
@@ -40,11 +40,19 @@ class _ViewProductPageState extends State<ViewProductPage> {
           return CustomScrollView(
             slivers: [
               SliverAppBar(
+                shadowColor: Colors.deepPurple.shade200,
+                foregroundColor: Colors.black,
+                backgroundColor: Colors.transparent,
+                actions: [
+                  CartBubbleView()
+                ],
+
                 expandedHeight: 250,
                 pinned: true,
                 floating: true,
                 title: Text('Products'),
-                flexibleSpace: FlexibleSpaceBar(),
+                flexibleSpace: FlexibleSpaceBar(title: Container(child: Text(''
+                ),),),
               ),
               SliverGrid(delegate: SliverChildBuilderDelegate(childCount: provider.productList.length,(context, index){
                 final product=provider.productList[index];

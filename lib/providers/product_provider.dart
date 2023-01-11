@@ -73,11 +73,9 @@ final avgRating= totalRating/ratingList.length;
 return DbHelper.updateProductField(productId, { productFieldAvgRating:avgRating});
   }
 
-  Future<void> addComment(String pid, String comment, UserModel userModel) async {
-final commentmodel= CommentModel(commentId: DateTime.now().microsecondsSinceEpoch.toString(), userModel: userModel,
-  comment: comment,productId: pid,date:getFormattedDate(DateTime.now(),pattern: 'dd/MM/yyyy')
-);
-return DbHelper.addComment(commentmodel);
+  Future<void> addComment(CommentModel commentModel) async {
+
+return DbHelper.addComment(commentModel);
   }
 
  Future<List<CommentModel>> getAllcommentsByProduct(String productId) async{
