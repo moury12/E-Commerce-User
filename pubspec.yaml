@@ -38,7 +38,7 @@ dependencies:
   cupertino_icons: ^1.0.5
   firebase_core: ^2.1.1
   firebase_auth: ^4.1.0
-  cloud_firestore: ^4.0.3
+  cloud_firestore:
   firebase_storage: ^11.0.3
   provider: ^6.0.4
   intl: ^0.17.0
@@ -48,11 +48,17 @@ dependencies:
   flutter_easyloading: ^3.0.5
   connectivity_plus:
   google_sign_in:
+  flutter_iconly: ^1.0.2
   pin_code_fields:
+  card_swiper: ^3.0.1
   google_fonts:
   flutter_rating_bar:
   flutter_sslcommerz: ^2.2.2-nullsafety.0
   fluttertoast: ^8.1.2
+  firebase_messaging:
+  firebase_analytics:
+  flutter_local_notifications:
+  fancy_shimmer_image: ^2.0.3
 dev_dependencies:
   flutter_test:
     sdk: flutter

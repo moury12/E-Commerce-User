@@ -1,11 +1,13 @@
 import 'package:ecommerce_user/auth/authservice.dart';
 import 'package:ecommerce_user/db/db_helper.dart';
 import 'package:ecommerce_user/models/product_model.dart';
+import 'package:ecommerce_user/models/wish_model.dart';
 import 'package:ecommerce_user/utils/helper_functions.dart';
 import 'package:flutter/cupertino.dart';
 import '../models/cart_model.dart';
 class CartProvider extends ChangeNotifier{
 List<CartModel> cartList=[];
+ProductModel? productModel;
 bool isProductInCart (String pid){
   bool tag= false;
   for(final cartModel in cartList){
@@ -16,6 +18,7 @@ bool isProductInCart (String pid){
 }
 return tag;
 }
+
 int get totalItemInCart => cartList.length;
   Future<void> addToCart(ProductModel productModel) {
 final cartModel= CartModel(productId: productModel.productId!,categoryId:productModel.category.categoryId! , productName: productModel.productName, productImageUrl: productModel.thumbnailImageUrl, salePrice: num.parse(calculatePriceAfterDiscount(productModel.salePrice,productModel.productDiscount)));
@@ -32,6 +35,7 @@ cartList =List.generate(snapshot.docs.length, (index) => CartModel.fromMap(snaps
 notifyListeners();
   });
   }
+
 num priceWithQuantity(CartModel cartModel)=>
   cartModel.salePrice*cartModel.quantity;
 

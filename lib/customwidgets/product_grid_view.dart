@@ -34,7 +34,7 @@ class ProductGridView extends StatelessWidget {
                 ),
               ),
              Container(
-                  height: 90,
+                  height: 50,
                   width: double.infinity,
                   color: Colors.deepPurple.shade50,
                   child: Column(

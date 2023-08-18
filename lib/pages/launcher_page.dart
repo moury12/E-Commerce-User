@@ -1,9 +1,9 @@
 
+import 'package:ecommerce_user/pages/launcher_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../auth/authservice.dart';
 import 'login_page.dart';
-import 'view_product_page.dart';
 
 class LauncherPage extends StatelessWidget {
   static const String routeName = '/';
@@ -13,7 +13,7 @@ class LauncherPage extends StatelessWidget {
   Widget build(BuildContext context) {
     Future.delayed(Duration.zero, () {
       if (AuthService.currentUser != null) {
-        Navigator.pushReplacementNamed(context, ViewProductPage.routeName);
+        Navigator.pushReplacementNamed(context, LauncherScreen.routeName);
       } else {
         Navigator.pushReplacementNamed(context, LoginPage.routeName);
       }

@@ -4,6 +4,8 @@ import 'package:ecommerce_user/utils/helper_functions.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../customwidgets/empty_screen.dart';
+
 class OrderPage extends StatefulWidget {
   static const String routeName = '/order';
   const OrderPage({Key? key}) : super(key: key);
@@ -24,7 +26,8 @@ class _OrderPageState extends State<OrderPage> {
           child: Consumer<OrderProvider>(
             builder: (context, provider, child) {
               final itemList=provider.orderitemList;
-              return ExpansionPanelList(expansionCallback:(index, isExpanded) {
+              return provider.orderList.isEmpty?Expanded(child: EmptyWidget(text: 'You haven\'t ordered yet!',))
+              :ExpansionPanelList(expansionCallback:(index, isExpanded) {
                 setState(() {
                   itemList[index].isExpanded=!isExpanded;
                 });

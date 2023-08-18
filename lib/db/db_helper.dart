@@ -8,6 +8,7 @@ import '../models/category_model.dart';
 import '../models/order_constant_model.dart';
 import '../models/product_model.dart';
 import '../models/user_model.dart';
+import '../models/wish_model.dart';
 
 class DbHelper {
   static final _db = FirebaseFirestore.instance;
@@ -17,6 +18,9 @@ class DbHelper {
     return snapshot.exists;
   }
 
+  static Future<DocumentSnapshot<Map<String, dynamic>>> getProductById(
+          String id) =>
+      _db.collection(collectionProduct).doc(id).get();
   static Stream<DocumentSnapshot<Map<String, dynamic>>> getOrderConstants() =>
       _db
           .collection(collectionOrderConstant)
@@ -115,6 +119,32 @@ class DbHelper {
           .doc(uid)
           .collection(collectionCart)
           .snapshots();
+static Future<void> addToFav(String uid, WishListModel wishModel) {
+    return _db
+        .collection(collectionUser)
+        .doc(uid)
+        .collection(collectionFav)
+        .doc(wishModel.productId)
+        .set(wishModel
+            .toMap()); //cart er information usercollection e rakha hobe
+  }
+
+  static Future<void> removeFromFav(String uid, String s) {
+    return _db
+        .collection(collectionUser)
+        .doc(uid)
+        .collection(collectionFav)
+        .doc(s)
+        .delete();
+  }
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllFavItems(
+          String uid) =>
+      _db
+          .collection(collectionUser)
+          .doc(uid)
+          .collection(collectionFav)
+          .snapshots();
 
   static Future<void> updateCartQuantity(String uid, CartModel cartModel) {
     return _db
@@ -134,34 +164,51 @@ class DbHelper {
           .collection(collectionProduct)
           .doc(cartModel.productId)
           .get();
-        final snapshotCategory = await _db
+      final snapshotCategory = await _db
           .collection(collectionCategory)
           .doc(cartModel.categoryId)
           .get();
 
       final prevProductStock = snapshotProduct.data()![productFieldStock];
-      final prevCategoryStock = snapshotCategory.data()![categoryFieldProductCount];
+      final prevCategoryStock =
+          snapshotCategory.data()![categoryFieldProductCount];
       final proDoc = _db.collection(collectionProduct).doc(cartModel.productId);
-      final catDoc = _db.collection(collectionCategory).doc(cartModel.categoryId);
-      wb.update(proDoc, {productFieldStock: (prevProductStock - cartModel.quantity)});
-      wb.update(catDoc, {categoryFieldProductCount: (prevCategoryStock - cartModel.quantity)});
-
+      final catDoc =
+          _db.collection(collectionCategory).doc(cartModel.categoryId);
+      wb.update(
+          proDoc, {productFieldStock: (prevProductStock - cartModel.quantity)});
+      wb.update(catDoc, {
+        categoryFieldProductCount: (prevCategoryStock - cartModel.quantity)
+      });
     }
     return wb.commit();
   }
-  static Future<void>clearCartItem(String uid,List<CartModel> cartList)async{
+
+  static Future<void> clearCartItem(
+      String uid, List<CartModel> cartList) async {
     final wb = _db.batch();
-    for(final cartModel in cartList){
-      final doc=_db.collection(collectionUser).doc(uid).collection(collectionCart).doc(cartModel.productId);
+    for (final cartModel in cartList) {
+      final doc = _db
+          .collection(collectionUser)
+          .doc(uid)
+          .collection(collectionCart)
+          .doc(cartModel.productId);
       wb.delete(doc);
     }
     wb.commit();
-
   }
-  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllOrderByUser(String uid) =>
-      _db.collection(collectionOrder).where(orderFieldUserId, isEqualTo: uid).snapshots();
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllOrderByUser(
+          String uid) =>
+      _db
+          .collection(collectionOrder)
+          .where(orderFieldUserId, isEqualTo: uid)
+          .snapshots();
 
   static Future<void> addNotification(NotificationModel notificationModel) {
-    return _db.collection(collectionNotification).doc(notificationModel.id).set(notificationModel.toMap());
+    return _db
+        .collection(collectionNotification)
+        .doc(notificationModel.id)
+        .set(notificationModel.toMap());
   }
 }

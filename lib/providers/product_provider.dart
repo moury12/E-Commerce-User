@@ -14,6 +14,13 @@ import '../models/product_model.dart';
 class ProductProvider extends ChangeNotifier {
   List<CategoryModel> categoryList = [];
   List<ProductModel> productList = [];
+  List<ProductModel> get featuredProducts {
+    return productList.where((product) => product.featured || product.productDiscount > 0).toList();
+  }
+  Future<ProductModel> getProductById(String id) async {
+    final snapshot = await DbHelper.getProductById(id);
+    return ProductModel.fromMap(snapshot.data()!);
+  }
 
   getAllCategories() {
     DbHelper.getAllCategories().listen((snapshot) {

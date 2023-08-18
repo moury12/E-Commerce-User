@@ -1,5 +1,6 @@
 import 'package:ecommerce_user/models/order_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_sslcommerz/model/SSLCAdditionalInitializer.dart';
 import 'package:flutter_sslcommerz/model/SSLCCustomerInfoInitializer.dart';
 import 'package:flutter_sslcommerz/model/SSLCEMITransactionInitializer.dart';
@@ -12,6 +13,7 @@ import 'package:flutter_sslcommerz/model/sslproductinitilizer/General.dart';
 import 'package:flutter_sslcommerz/model/sslproductinitilizer/SSLCProductInitializer.dart';
 import 'package:flutter_sslcommerz/sslcommerz.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:google_fonts/google_fonts.dart';
 enum SdkType { TESTBOX, LIVE }
 class OrderSuccessFullPage extends StatefulWidget {
   static const String routeName='/orderSuccessFull';
@@ -31,14 +33,22 @@ class _OrderSuccessFullPageState extends State<OrderSuccessFullPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Thanks for Order'),),
       body: Center(child: ListView(
         children: [
 
-          Image.asset('assets/i.png'),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Text('Order Has been placed!'),
+            child: Text('Order Has been placed!',  style: GoogleFonts.adamina(fontSize: 20,
+                color: Colors.deepPurpleAccent,
+                fontWeight: FontWeight.bold),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0).copyWith(top: 0),
+            child: Text('Please complete payment process!',  style: GoogleFonts.adamina(fontSize: 12,
+                color: Colors.black54,
+                fontWeight: FontWeight.normal),
+            ),
           ),
           Form(
             key: _key,
@@ -52,13 +62,16 @@ class _OrderSuccessFullPageState extends State<OrderSuccessFullPage> {
                       child: TextFormField(
                         initialValue: "demotest",
                         keyboardType: TextInputType.text,
+                        style:GoogleFonts.adamina(fontSize: 12,color: Colors.black54) ,
                         decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(8.0),
-                            ),
-                          ),
-                          hintText: "Store ID",
+                          hintStyle:GoogleFonts.adamina(fontSize: 12,color: Colors.black54) ,
+                          hintText: "demotest",
+                          focusedBorder:  OutlineInputBorder(
+                            borderSide: BorderSide(width: 0, color: Colors.transparent),),
+                          enabledBorder: OutlineInputBorder(          borderRadius: BorderRadius.circular(50),
+
+                            borderSide: BorderSide(width: 1, color: Colors.deepPurple.shade200),),
+                          prefixIcon: Icon(IconlyLight.unlock,color: Colors.deepPurple.shade700,size: 20,),
                         ),
                         validator: (value) {
                           if (value != null)
@@ -76,13 +89,16 @@ class _OrderSuccessFullPageState extends State<OrderSuccessFullPage> {
                       child: TextFormField(
                         initialValue: "qwerty",
                         keyboardType: TextInputType.text,
+                        style:GoogleFonts.adamina(fontSize: 12,color: Colors.black54) ,
                         decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(8.0),
-                            ),
-                          ),
-                          hintText: "Store password",
+                          hintStyle:GoogleFonts.adamina(fontSize: 12,color: Colors.black54) ,
+                          hintText: "demotest",
+                          focusedBorder:  OutlineInputBorder(
+                            borderSide: BorderSide(width: 0, color: Colors.transparent),),
+                          enabledBorder: OutlineInputBorder(          borderRadius: BorderRadius.circular(50),
+
+                            borderSide: BorderSide(width: 1, color: Colors.deepPurple.shade200),),
+                          prefixIcon: Icon(IconlyLight.unlock,color: Colors.deepPurple.shade700,size: 20,),
                         ),
                         validator: (value) {
                           if (value != null)
@@ -100,36 +116,41 @@ class _OrderSuccessFullPageState extends State<OrderSuccessFullPage> {
                         Radio(
                           value: SdkType.TESTBOX,
                           groupValue: _radioSelected,
-                          activeColor: Colors.blue,
+                          activeColor: Colors.deepPurpleAccent,
                           onChanged: (value) {
                             setState(() {
                               _radioSelected = value as SdkType;
                             });
                           },
                         ),
-                        Text("TEXTBOX"),
+                        Text("TEXTBOX",style: GoogleFonts.adamina(fontSize: 12,color: Colors.deepPurple.shade300,fontWeight: FontWeight.bold)),
                         Radio(
                           value: SdkType.LIVE,
                           groupValue: _radioSelected,
-                          activeColor: Colors.blue,
+                          activeColor: Colors.deepPurpleAccent,
                           onChanged: (value) {
                             setState(() {
                               _radioSelected = value as SdkType;
                             });
                           },
                         ),
-                        Text('LIVE'),
+                        Text('LIVE',style: GoogleFonts.adamina(fontSize: 12,color: Colors.deepPurple.shade300,fontWeight: FontWeight.bold)),
                       ],
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
                         keyboardType: TextInputType.phone,
+                        style:GoogleFonts.adamina(fontSize: 12,color: Colors.black54) ,
                         decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(8.0))),
-                          hintText: "Phone number",
+                          hintStyle:GoogleFonts.adamina(fontSize: 12,color: Colors.black54) ,
+                          hintText: "phone number",
+                          focusedBorder:  OutlineInputBorder(
+                            borderSide: BorderSide(width: 0, color: Colors.transparent),),
+                          enabledBorder: OutlineInputBorder(          borderRadius: BorderRadius.circular(50),
+
+                            borderSide: BorderSide(width: 1, color: Colors.deepPurple.shade200),),
+                          prefixIcon: Icon(IconlyLight.call,color: Colors.deepPurple.shade700,size: 20,),
                         ),
                         onSaved: (value) {
                           formData['phone'] = value;
@@ -143,11 +164,16 @@ class _OrderSuccessFullPageState extends State<OrderSuccessFullPage> {
                         // keyboardType: TextInputType.number,
                         keyboardType:
                         TextInputType.numberWithOptions(decimal: true),
+                        style:GoogleFonts.adamina(fontSize: 12,color: Colors.black54) ,
                         decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(8.0))),
-                          hintText: "Payment amount",
+                          hintStyle:GoogleFonts.adamina(fontSize: 12,color: Colors.black54) ,
+                          hintText: "payment amount",
+                          focusedBorder:  OutlineInputBorder(
+                            borderSide: BorderSide(width: 0, color: Colors.transparent),),
+                          enabledBorder: OutlineInputBorder(          borderRadius: BorderRadius.circular(50),
+
+                            borderSide: BorderSide(width: 1, color: Colors.deepPurple.shade200),),
+                          prefixIcon: Icon(Icons.monetization_on_outlined,color: Colors.deepPurple.shade700,size: 20,),
                         ),
                         validator: (value) {
                           if (value != null)
@@ -164,20 +190,23 @@ class _OrderSuccessFullPageState extends State<OrderSuccessFullPage> {
                       padding: const EdgeInsets.all(8.0),
                       child: TextFormField(
                         keyboardType: TextInputType.text,
+                        style:GoogleFonts.adamina(fontSize: 12,color: Colors.black54) ,
                         decoration: InputDecoration(
-                          border: OutlineInputBorder(
-                              borderRadius:
-                              BorderRadius.all(Radius.circular(8.0))),
-                          hintText: "Enter multi card",
+                          hintStyle:GoogleFonts.adamina(fontSize: 12,color: Colors.black54) ,
+                          hintText: "Enter multicard",
+                          focusedBorder:  OutlineInputBorder(
+                            borderSide: BorderSide(width: 0, color: Colors.transparent),),
+                          enabledBorder: OutlineInputBorder(          borderRadius: BorderRadius.circular(50),
+
+                            borderSide: BorderSide(width: 1, color: Colors.deepPurple.shade200),),
+                          prefixIcon: Icon(IconlyLight.wallet,color: Colors.deepPurple.shade700,size: 20,),
                         ),
                         onSaved: (value) {
                           formData['multicard'] = value;
                         },
                       ),
-                    ),
-                    ElevatedButton(
-                      child: Text("Pay now"),
-                      onPressed: () {
+                    ),  InkWell(hoverColor: Colors.grey.withOpacity(1),
+                      onTap:() {
                         if (_key.currentState != null) {
                           _key.currentState?.save();
                           print(_radioSelected);
@@ -185,7 +214,28 @@ class _OrderSuccessFullPageState extends State<OrderSuccessFullPage> {
                           // sslCommerzCustomizedCall();
                         }
                       },
+                      child: FittedBox(
+                        child: Container(
+                            child: Padding(
+                              padding: const EdgeInsets.all(18.0)
+                                  .copyWith(top: 10, bottom: 10),
+                              child: Text('Pay now',
+                                  style: GoogleFonts.monda(
+                                      fontSize: 12,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w500)),
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(20.0)),
+                              gradient: LinearGradient(colors: [
+                                Colors.deepPurple.shade200,
+                                Colors.lightBlue.shade200,
+                              ]),
+                            )),
+                      ),
                     )
+                    
                   ],
                 ),
               ),
