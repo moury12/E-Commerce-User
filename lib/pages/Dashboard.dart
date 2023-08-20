@@ -50,8 +50,8 @@ class _DashBoardState extends State<DashBoard> {
           showUnselectedLabels: false,
           type: BottomNavigationBarType.fixed,
           currentIndex: index,
-selectedItemColor:index==2?Colors.deepPurple.shade900 :Colors.deepPurple.shade700,
-          unselectedItemColor: index==2?Colors.deepPurple.shade50:Colors.deepPurple.shade200,
+selectedItemColor:index==1?Colors.deepPurple.shade900 :Colors.deepPurple.shade700,
+          unselectedItemColor: index==1?Colors.deepPurple.shade50:Colors.deepPurple.shade200,
 
           items:  [
 
@@ -60,14 +60,14 @@ selectedItemColor:index==2?Colors.deepPurple.shade900 :Colors.deepPurple.shade70
              label: "",
 
               //selectedColor:Colors.deepPurple.shade800 ,
+            ), BottomNavigationBarItem(
+                icon: CartBubbleView()
+                ,label: ""
+              //selectedColor:Colors.deepPurple.shade800 ,
             ),  BottomNavigationBarItem(
               icon: Icon(IconlyBold.heart),label: ""
               //selectedColor:Colors.deepPurple.shade800 ,
-            ),  BottomNavigationBarItem(
-              icon: CartBubbleView()
-              ,label: ""
-              //selectedColor:Colors.deepPurple.shade800 ,
-            ),  BottomNavigationBarItem(
+            ),   BottomNavigationBarItem(
               icon: Icon(IconlyBold.user2),label: ""
               //selectedColor:Colors.deepPurple.shade800 ,
             ),
@@ -75,7 +75,7 @@ selectedItemColor:index==2?Colors.deepPurple.shade900 :Colors.deepPurple.shade70
 
           ],
 
-          backgroundColor: index==2?Colors.deepPurple.shade300:index==0?Colors.transparent  :Colors.white,
+          backgroundColor: index==1?Colors.deepPurple.shade300:index==0?Colors.transparent  :Colors.white,
 
 
           onTap: (selectedIndex) {
@@ -96,10 +96,10 @@ selectedItemColor:index==2?Colors.deepPurple.shade900 :Colors.deepPurple.shade70
         widget = ViewProductPage();
         break;
       case 1:
-        widget = WishListPage();
+        widget = CartPage();
         break;
       case 2:
-        widget = CartPage();
+        widget = WishListPage();
         break;
       case 3:
         widget = UserProfile();

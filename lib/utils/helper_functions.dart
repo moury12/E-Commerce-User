@@ -1,13 +1,21 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/intl.dart';
-
 showMsg(BuildContext context, String msg) =>
-    ScaffoldMessenger.of(context)
-    .showSnackBar(SnackBar(content: Text(msg)));
+    Fluttertoast.showToast(
+      msg: msg,
+      toastLength:
+      Toast.LENGTH_SHORT, // Duration for which the toast should be visible
+      gravity: ToastGravity.BOTTOM, // Toast position
+      backgroundColor: Colors.black54, // Background color of the toast
+      textColor: Colors.white,
+      fontSize: 20, // Text color of the toast
+    );
 
-getFormattedDate(DateTime dt, {String pattern = 'dd/MM/yyyy'}) =>
-    DateFormat(pattern).format(dt);
+String getFormattedDate(DateTime dt, {String pattern = 'dd MMMM yyyy'}) {
+  return DateFormat(pattern).format(dt);
+}
 
 Future<bool> isConnectedToInternet() async {
   final result = await Connectivity().checkConnectivity();

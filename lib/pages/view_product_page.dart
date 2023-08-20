@@ -73,13 +73,13 @@ class _ViewProductPageState extends State<ViewProductPage> {
             borderRadius: BorderRadius.circular(20)
         ),
             elevation: 2,child: IconButton(onPressed: (){Navigator.pushNamed(context, OrderPage.routeName);},
-            icon: Icon(IconlyBold.bag2,color: Colors.deepPurple.shade700,size: 20,))),
-        actions: [ Card(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20)
-            ),
-            elevation: 2,child: IconButton(onPressed: (){},
-            icon: Icon(IconlyBold.notification,color: Colors.deepPurple.shade700,size: 20,))),],
+            icon:Positioned(top:0 ,
+                left: 0,
+                child: Orderbubble()) )),
+        actions: [ Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.asset('assets/d.png',height: 30,width: 30,),
+        ),],
       ),
       //drawer: MainDrawer(),
 
@@ -152,7 +152,7 @@ Padding(
                Container(height:  250,width: double.infinity,
                  child:
                     Swiper(
-                     autoplayDelay: 2000,
+                     autoplayDelay: 3000,
                      autoplay: true,
                      layout: SwiperLayout.DEFAULT,
                      viewportFraction: 0.9,
@@ -188,8 +188,7 @@ Padding(
                                  Positioned(top: 30,
                                      left:10,
                                      child: Column(
-                                       mainAxisAlignment: MainAxisAlignment.center,
-                                       crossAxisAlignment: CrossAxisAlignment.center,
+
                                        children: [
                                          SizedBox(width:115,
                                              child: Text(
@@ -234,7 +233,9 @@ Padding(
 
 
                )),
-               Container( decoration: BoxDecoration(
+               SizedBox(height: 10,),
+               Container(
+                 decoration: BoxDecoration(
                  borderRadius:
                  BorderRadius.only(topRight: Radius.circular(40),topLeft: Radius.circular(40),),
                  gradient: LinearGradient(colors: [
@@ -244,18 +245,12 @@ Padding(
                ),
                  child: Column(
                    children: [
-                     // Align(
-                     //   alignment: Alignment.topLeft,
-                     //   child: Padding(
-                     //     padding: const EdgeInsets.only( left: 28),
-                     //     child: Text(
-                     //       'Popular',style: GoogleFonts.adamina(fontSize: 12,color: Colors.deepPurple.shade900,fontWeight: FontWeight.bold),),
-                     //   ),
-                     // ),
 
-                     SizedBox(height: 20,),Padding(
+
+                     SizedBox(height: 10,),Padding(
                        padding: const EdgeInsets.all(8.0),
-                       child: Container(height: 200,width: double.infinity,
+                       child: Container(height: 200,
+                         width: double.infinity,
                          child: ListView.builder(scrollDirection: Axis.horizontal,
                            itemBuilder: (context, index) {
                              final product=provider.productList[index];
@@ -292,45 +287,40 @@ Padding(
                                          shape: RoundedRectangleBorder(
                                              borderRadius: BorderRadius.circular(20)
                                          ),
-                                         child: FittedBox(
-                                           child: Column(
-                                             children: [
+                                         child: Column(
+                                           children: [
 
 
-                                               Padding(
-                                                 padding: const EdgeInsets.all(2.0),
-                                                 child: Text(
-                                                   product.productName,
-                                                   style: GoogleFonts.adamina(fontSize: 12,
-                                                       color: Colors.deepPurple,
-                                                       fontWeight: FontWeight.bold),
-                                                 ),
+                                             Padding(
+                                               padding: const EdgeInsets.all(5.0).copyWith(left: 15),
+                                               child: Text(
+                                                 product.productName,
+                                                 style: GoogleFonts.adamina(fontSize: 10,
+                                                     color: Colors.deepPurple,
+                                                     fontWeight: FontWeight.bold),maxLines: 1,overflow: TextOverflow.ellipsis,
                                                ),
-                                               Text(
-                                                 product.category.categoryName,
-                                                 style: GoogleFonts.adamina(fontSize: 9,
-                                                     color: Colors.black54,
-                                                     fontWeight: FontWeight.normal),
-                                               ),
-                                               Row(
+                                             ),
 
-                                                 children: [
-                                                   TextButton.icon(onPressed: () {},
-                                                     icon: Icon(IconlyBold.star, size: 15,
-                                                       color: Colors.yellow.shade600,),
-                                                     label: Text(
-                                                       product.avgRating!.toStringAsFixed(1),
-                                                       style: GoogleFonts.adamina(fontSize: 10,
-                                                           color: Colors.deepPurple
-                                                               .shade300,fontWeight: FontWeight.w600),),),
-                                                   Text("${product.salePrice
-                                                       .toString()}$currencySymbol",style: GoogleFonts.monda(fontSize: 10,color: Colors.purple.shade900, fontWeight: FontWeight.w600))
-                                                 ],
-                                                 mainAxisAlignment: MainAxisAlignment
-                                                     .spaceBetween,
-                                               )
-                                             ],
-                                           ),
+Row(
+  children: [ Text(
+    product.category.categoryName,
+    style: GoogleFonts.adamina(fontSize: 9,
+        color: Colors.black54,
+        fontWeight: FontWeight.normal),
+  ),SizedBox(width: 19,),
+    Icon(IconlyBold.star, size: 15,
+                             color: Colors.yellow.shade600,),Text(
+                                                     product.avgRating!.toStringAsFixed(1),
+                                                     style: GoogleFonts.adamina(fontSize: 10,
+                                                         color: Colors.deepPurple
+                                                             .shade300,fontWeight: FontWeight.w600),),],
+                                                             mainAxisAlignment: MainAxisAlignment.center,),
+
+                                                 Text("${product.salePrice
+                                                     .toString()}$currencySymbol",style: GoogleFonts.monda(fontSize: 10,color: Colors.purple.shade900, fontWeight: FontWeight.w600))
+                                               ],
+
+
                                          ),
                                        ),
                                      ),

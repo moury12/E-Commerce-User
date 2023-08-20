@@ -61,6 +61,7 @@ class DbHelper {
           .doc(pid)
           .collection(collectionRating)
           .get();
+
   static Future<void> addRating(RatingModel ratingmodel) async {
     final ratDoc = _db
         .collection(collectionProduct)

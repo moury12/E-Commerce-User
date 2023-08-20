@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:ecommerce_user/auth/authservice.dart';
+import 'package:ecommerce_user/customwidgets/empty_screen.dart';
 import 'package:ecommerce_user/models/comment_model.dart';
 import 'package:ecommerce_user/providers/shopping_cart_provider.dart';
 import 'package:ecommerce_user/providers/user_provider.dart';
@@ -32,14 +33,16 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   late ProductProvider productProvider;
   final txtcontroller = TextEditingController();
   final focusNode = FocusNode();
+  String addExtra='';
   String displayUrl = "";
   double userRateing = 0.0;
+   TextEditingController controller= TextEditingController();
   @override
   void didChangeDependencies() {
     productProvider = Provider.of<ProductProvider>(context, listen: false);
     productModel = ModalRoute.of(context)!.settings.arguments as ProductModel;
     displayUrl = productModel.thumbnailImageUrl;
-
+    Provider.of<ProductProvider>(context, listen: false).getAllcommentsByProduct(productModel.productId!);
     super.didChangeDependencies();
   }
 
@@ -52,12 +55,15 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       body: CustomScrollView(
         slivers: <Widget>[
           SliverAppBar(
               expandedHeight: 230,
               pinned: true,
-              backgroundColor: Colors.transparent,
+              backgroundColor: Colors.grey.shade100.withOpacity(0.2),
+              elevation: 0,
+              toolbarHeight: 40,
               flexibleSpace: FlexibleSpaceBar(
                 background: Stack(
                   fit: StackFit.expand,
@@ -98,7 +104,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             delegate: SliverChildListDelegate([
               Container(
                 decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.grey.shade100,
                     borderRadius:
                         BorderRadius.vertical(top: Radius.circular(20))),
                 child: Column(
@@ -227,6 +233,71 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           padding: const EdgeInsets.all(2.0),
                           child: Text('${productModel.salePrice}$currencySymbol',style: GoogleFonts.monda(fontSize: 10,color: Colors.purple, fontWeight: FontWeight.w500)))
                     ),
+                    productModel.shortDescription == null
+                        ? Text('')
+                        : Padding(
+                      padding: const EdgeInsets.all(8.0).copyWith(top: 0),
+                      child: Align(alignment: Alignment.topLeft,
+                        child: Text(
+                                '${productModel.shortDescription!}. we have ${productModel.stock} products on stock.',style: TextStyle(
+                          fontWeight: FontWeight.w500, fontSize: 12,color: Colors.black
+                        ),),
+                      ),
+                    ),
+                    Align(alignment:Alignment.topLeft,
+                      child: Text('      Write your wish on cake',
+                          style: GoogleFonts.adamina(
+                              fontWeight: FontWeight.w700,color: Colors.deepPurple, fontSize: 10)),
+                    ),
+              Padding(
+                padding:  EdgeInsets.all(5.0).copyWith(left: 10,right: 30),
+                child: Container(height: 50,
+                  decoration: BoxDecoration(color: Colors.white,borderRadius:BorderRadius.circular(50), ),
+                  child: TextField(
+                    style:GoogleFonts.adamina(fontSize: 12,color: Colors.black54) ,
+                    controller: controller,
+
+                    decoration: InputDecoration(
+                      hintStyle:GoogleFonts.adamina(fontSize: 10,color: Colors.black54) ,
+                      hintText: 'Wishing you a haapy birthday',
+                      focusedBorder:  OutlineInputBorder(
+                        borderSide: BorderSide(width: 0, color: Colors.transparent),),
+                      enabledBorder: OutlineInputBorder(          borderRadius: BorderRadius.circular(50),
+
+                        borderSide: BorderSide(width: 1, color: Colors.transparent),),
+                     // prefixIcon: Icon(Icons.add_location_alt_outlined,color: Colors.deepPurple.shade700,size: 20,),
+                    ),
+                  ),
+                ),
+              ),
+                    Align(alignment:Alignment.topLeft,
+                      child: Text('      Add extra',
+                          style: GoogleFonts.adamina(
+                              fontWeight: FontWeight.w700,color: Colors.deepPurple, fontSize: 10)),
+                    ),
+
+FittedBox(
+  child: Row(children: [
+    TextButton(onPressed: (){
+      setState(() {
+        addExtra='🍒';
+      });
+    }, child: Text('🍒')),
+    TextButton(onPressed: (){  setState(() {
+      addExtra='🍫';
+    });}, child: Text('🍫')),
+    TextButton(onPressed: (){  setState(() {
+      addExtra='🍓';
+    });}, child: Text('🍓')),
+    TextButton(onPressed: (){  setState(() {
+      addExtra='🍧';
+    });}, child: Text('🍧')),
+
+    TextButton(onPressed: (){  setState(() {
+      addExtra='🍭';
+    });}, child: Text('🍭')),
+  ],),
+),
                     Row(
                       children: [
                         Stack(
@@ -253,11 +324,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                           width: 0, color: Colors.transparent),
                                     ),
                                     hintStyle:
-                                        GoogleFonts.adamina(fontSize: 10),
+                                    GoogleFonts.adamina(fontSize: 10),
                                     hintText: 'Add your comment here...',
                                     border: OutlineInputBorder(
                                         borderRadius:
-                                            BorderRadius.circular(20)),
+                                        BorderRadius.circular(20)),
                                   ),
                                 ),
                               ),
@@ -270,54 +341,54 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                   color: Colors.deepPurple.shade700,
                                   shape: RoundedRectangleBorder(
                                       borderRadius:
-                                          BorderRadius.circular(20)),
+                                      BorderRadius.circular(20)),
                                   elevation: 2,
                                   child: IconButton(
                                       onPressed: () async {
-    print(txtcontroller.text);
-    if (txtcontroller.text.isEmpty) {
-    showMsg(context,
-    'Please! provide a valid comment');
-    return;
-    }
-    if (AuthService.currentUser!.isAnonymous) {
-    showMsg(context,
-    "Please! Sign in to comment on this product");
-    return;
-    }
-    EasyLoading.show(status: 'please wait');
-    final commentModel = CommentModel(
-      approved: true,
-    commentId: DateTime.now()
-        .microsecondsSinceEpoch
-        .toString(),
-    userModel: context
-        .read<UserProvider>()
-        .userModel!,
-    comment: txtcontroller.text,
-    productId: productModel.productId!,
-    date: getFormattedDate(DateTime.now(),
-    pattern: 'dd/MM/yyyy'));
-    await productProvider
-        .addComment(commentModel);
-    EasyLoading.dismiss();
-    //focusNode.unfocus();
-    txtcontroller.clear();
-    showMsg(context,
-    'Thanks for your comment, your comment is waiting for admin approval');
-    final notificationModel = NotificationModel(
-    id: DateTime.now()
-        .microsecondsSinceEpoch
-        .toString(),
-    type: NotificationType.comment,
-    message:
-    'Product ${productModel.productName} has a new comment which is waiting for admin approval',
-    commentModel: commentModel);
-    await Provider.of<NotificationProvider>(
-    context,
-    listen: false)
-        .addNotification(notificationModel);
-    },
+                                        print(txtcontroller.text);
+                                        if (txtcontroller.text.isEmpty) {
+                                          showMsg(context,
+                                              'Please! provide a valid comment');
+                                          return;
+                                        }
+                                        if (AuthService.currentUser!.isAnonymous) {
+                                          showMsg(context,
+                                              "Please! Sign in to comment on this product");
+                                          return;
+                                        }
+                                        EasyLoading.show(status: 'please wait');
+                                        final commentModel = CommentModel(
+                                            approved: true,
+                                            commentId: DateTime.now()
+                                                .microsecondsSinceEpoch
+                                                .toString(),
+                                            userModel: context
+                                                .read<UserProvider>()
+                                                .userModel!,
+                                            comment: txtcontroller.text,
+                                            productId: productModel.productId!,
+                                            date: getFormattedDate(DateTime.now(),
+                                                pattern: 'dd/MM/yyyy'));
+                                        await productProvider
+                                            .addComment(commentModel);
+                                        EasyLoading.dismiss();
+                                        //focusNode.unfocus();
+                                        txtcontroller.clear();
+                                        showMsg(context,
+                                            'Thanks for your comment, your comment is waiting for admin approval');
+                                        final notificationModel = NotificationModel(
+                                            id: DateTime.now()
+                                                .microsecondsSinceEpoch
+                                                .toString(),
+                                            type: NotificationType.comment,
+                                            message:
+                                            'Product ${productModel.productName} has a new comment which is waiting for admin approval',
+                                            commentModel: commentModel);
+                                        await Provider.of<NotificationProvider>(
+                                            context,
+                                            listen: false)
+                                            .addNotification(notificationModel);
+                                      },
                                       icon: Icon(
                                         IconlyBold.arrowRight,
                                         color: Colors.white,
@@ -330,75 +401,64 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                           alignment: MainAxisAlignment.end,
                           buttonMinWidth: 10,
                           children: [
-                          //   Consumer<CartProvider>(
-                          // builder: (context, provider, child){final isInFav = provider
-                          //     .isProductInWishList(productModel.productId!);
-                          //   return IconButton(
-                          //     onPressed: () {
-                          //       if (isInFav) {
-                          //         provider.removeFromFav(
-                          //             productModel.productId!);
-                          //       } else {
-                          //
-                          //         provider.addToFav(productModel);
-                          //       }
-                          //     },
-                          //     icon: Icon(isInFav?IconlyBold.heart:IconlyLight.heart,color: Colors.deepPurple.shade900,));}
-                          //
-                          //   ),
+
                             Consumer<WishListProvider>(
                                 builder: (context, provider, child) {
-                              final isInCart = provider
-                                  .isProductInWishList(productModel.productId!);
-                              return IconButton(
-                                  onPressed: () {
-                                    if (isInCart) {
-                                      provider.removeFromFav(
-                                          productModel.productId!);
-                                    } else {
-                                      productModel.stock>0?
-                                      provider.addToFav(productModel):showMsg(context, 'Sorry! product is not available in stock');
-                                    }
-                                  },
-                                  icon: Icon(isInCart
-                                      ? IconlyBold.heart
-                                      : IconlyLight.heart,color: Colors.deepPurple.shade900,));
-                            }),
+                                  final isInCart = provider
+                                      .isProductInWishList(productModel.productId!);
+                                  return IconButton(
+                                      onPressed: () {
+                                        if (isInCart) {
+                                          provider.removeFromFav(
+                                              productModel.productId!);
+                                        } else {
+                                          if (AuthService.currentUser!.isAnonymous) {
+                                            showMsg(context, 'Please sign in to add this product on wishlist');
+                                            return;
+                                          }else{
+                                          productModel.stock>0?
+                                          provider.addToFav(productModel):showMsg(context, 'Sorry! product is not available in stock');
+                                        }}
+                                      },
+                                      icon: Icon(isInCart
+                                          ? IconlyBold.heart
+                                          : IconlyLight.heart,color: Colors.deepPurple.shade900,));
+                                }),
                             Consumer<CartProvider>(
                                 builder: (context, provider, child) {
-                              final isInCart = provider
-                                  .isProductInCart(productModel.productId!);
-                              return IconButton(
-                                  onPressed: () {
-                                    if (isInCart) {
-                                      provider.removeFromCart(
-                                          productModel.productId!);
-                                    } else {
-                                      productModel.stock>0?
-                                      provider.addToCart(productModel):showMsg(context, 'Sorry! product is not available in stock');
-                                    }
-                                  },
-                                  icon: Icon(isInCart
-                                      ? Icons.remove_shopping_cart
-                                      : Icons.shopping_cart_outlined,color: Colors.deepPurple.shade900,));
-                            }),
+                                  final isInCart = provider
+                                      .isProductInCart(productModel.productId!);
+                                  return IconButton(
+                                      onPressed: () {
+                                        if (isInCart) {
+                                          provider.removeFromCart(
+                                              productModel.productId!);
+                                        } else {
+                                          if (AuthService.currentUser!.isAnonymous) {
+                                            showMsg(context, 'Please sign in to add this product on wishlist');
+                                            return;
+                                          }else{
+                                          productModel.stock>0?
+                                          provider.addToCart(productModel,controller.text,addExtra):showMsg(context, 'Sorry! product is not available in stock');
+                                        }}
+                                      },
+                                      icon: FittedBox(
+                                        child: Icon(isInCart
+                                            ? Icons.remove_shopping_cart
+                                            : Icons.shopping_cart_outlined,color: Colors.deepPurple.shade900,),
+                                      ));
+                                }),
                           ],
                         ),
                       ],
                     ),
-                    productModel.shortDescription == null
-                        ? Text('')
-                        : Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(productModel.shortDescription!),
-                          ),
-
+SizedBox(height: 10,),
                     Padding(
                       padding: const EdgeInsets.all(2.0),
                       child: Align(alignment:Alignment.topLeft,
-                        child: Text('   Comments',
+                        child: Text('     Comments',
                             style: GoogleFonts.adamina(
-                                fontWeight: FontWeight.w700,color: Colors.black54, fontSize: 12)),
+                                fontWeight: FontWeight.w700,color: Colors.deepPurple, fontSize: 10)),
                       ),
                     ),
                     FutureBuilder<List<CommentModel>>(
@@ -408,8 +468,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                         if (snapshot.hasData) {
                           final commentlist = snapshot.data!;
                           if (commentlist.isEmpty) {
-                            return Center(child: Text('No comments found',style: GoogleFonts.adamina(
-                                fontWeight: FontWeight.w700,color: Colors.black54, fontSize: 12)));
+                            return EmptyWidget(text: 'No comments found');
                           } else {
                             return Column(
                                 children: commentlist
@@ -418,7 +477,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                                               CrossAxisAlignment.start,
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.all(8.0),
+                                              padding: const EdgeInsets.all(8.0).copyWith(top: 0,bottom: 0),
                                               child: Card(
                                                 shape: RoundedRectangleBorder(
                                                     borderRadius:
@@ -480,6 +539,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   ],
                 ),
               ),
+
             ]),
           ),
         ],

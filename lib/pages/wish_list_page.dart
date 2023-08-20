@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ecommerce_user/pages/product_details_page.dart';
 import 'package:ecommerce_user/providers/product_provider.dart';
 import 'package:ecommerce_user/providers/wishList_provide.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,7 @@ late ProductProvider productProvider;
           padding: const EdgeInsets.all(8.0),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(100),
-            child: Image.network(userProvider.userModel!.imageUrl!,height: 30,width: 40,fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) {
+            child:userProvider.userModel==null?Text(''): Image.network(userProvider.userModel!.imageUrl??'',height: 30,width: 40,fit: BoxFit.cover, errorBuilder: (context, error, stackTrace) {
               return  Icon (IconlyLight.profile);
             },),
           ),
@@ -66,81 +67,87 @@ late ProductProvider productProvider;
                   itemBuilder: (context, index) {
                     final wishModel = provider.wishList[index];
                     return
-                      Stack(
-                        children: [
+                      InkWell(onTap: () async{
+                        final product = await productProvider.getProductById(wishModel.productId) ;
 
-                          Positioned(
-                            left: 30,
-                            right: 30,
-                            top: 20,
-                            child: Container(height: 100,
-                                decoration: BoxDecoration( color: Colors.grey.shade200,
-                                    borderRadius: BorderRadius.circular(70)
-                                ),
+                        Navigator.pushNamed(context, ProductDetailsPage.routeName ,arguments: product);
 
-                                child:             Row(
-                                  children: [SizedBox(width: 130,),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 13.0,top: 5),
-                                          child: Text(wishModel.productName,style: GoogleFonts.adamina(color: Colors.black,fontSize: 12,fontWeight: FontWeight.bold)),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(left: 13.0,top: 5),
-                                          child: Text('${wishModel.salePrice}$currencySymbol',style: GoogleFonts.adamina(color: Colors.black54,fontSize: 12,fontWeight: FontWeight.bold)),
-                                        ),
+                      },
+                        child: Stack(
+                          children: [
 
-                                        TextButton.icon(onPressed: () {
+                            Positioned(
+                              left: 30,
+                              right: 30,
+                              top: 20,
+                              child: Container(height: 100,
+                                  decoration: BoxDecoration( color: Colors.grey.shade200,
+                                      borderRadius: BorderRadius.circular(70)
+                                  ),
 
-                                        }, icon: Icon(IconlyLight.buy),label: Text(wishModel.quantity.toString()),
-                                        ),
-
-                                      ],
-                                    ),
+                                  child:      Padding(
+                                    padding:  EdgeInsets.only(left: 125.0,top: 15,right: 15),
+                                    child: Text(maxLines: 1,overflow: TextOverflow.ellipsis,
+                                        '${wishModel.productName} ',style: GoogleFonts.adamina(color: Colors.black,fontSize: 10,fontWeight: FontWeight.bold,)),
+                                  ),
 
 
-                                  ],
-                                )
-
-
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0).copyWith(left: 50,bottom: 20, top: 0),
-                            child: ClipRRect( borderRadius: BorderRadius.circular(100),
-
-                              child: CachedNetworkImage(
-                                fit: BoxFit.cover,
-                                width: 100,
-                                height: 100,
-                                imageUrl: wishModel.productImageUrl,
-                                placeholder: (context, url) =>
-                                const Center(child: CircularProgressIndicator()),
-                                errorWidget: (context, url, error) => const Icon(Icons.error),
                               ),
                             ),
-                          ),
-                          Positioned(right:0,top:20,
-                            child: FloatingActionButton.small(
-                              backgroundColor: Colors.deepPurple.shade200,
-                              onPressed: (){
-                                provider.removeFromFav(wishModel.productId);
-                              },
-                              child: Icon(IconlyBold.buy,color: Colors.white,size: 20,),
+                            Positioned(
+                              right: 115,
+                              top: 50,
+                              child: Column(
+                                children: [
+
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 13.0,top: 5),
+                                    child: Text('${wishModel.salePrice}$currencySymbol',style: GoogleFonts.adamina(color: Colors.black54,fontSize: 12,fontWeight: FontWeight.bold)),
+                                  ),
+
+                                  TextButton.icon(onPressed: () {
+
+                                  }, icon: Icon(IconlyLight.buy),label: Text(wishModel.quantity.toString()),
+                                  ),
+
+                                ],
+                              ),
                             ),
-                          ), Positioned(right:0,bottom:0,
-                            child: FloatingActionButton.small(
-                              backgroundColor: Colors.deepPurple.shade200,
-                              onPressed: ()async{
-                                final product= await productProvider.getProductById(wishModel.productId);
-                              wishModel.quantity>0?  cartProvider.addToCart(product):showMsg(context, 'Sorry! product is not available in stock');
-                              },
-                              child: Icon(IconlyBold.delete,color: Colors.white,size: 20,),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0).copyWith(left: 50,bottom: 20, top: 0),
+                              child: ClipRRect( borderRadius: BorderRadius.circular(100),
+
+                                child: CachedNetworkImage(
+                                  fit: BoxFit.cover,
+                                  width: 100,
+                                  height: 100,
+                                  imageUrl: wishModel.productImageUrl,
+                                  placeholder: (context, url) =>
+                                  const Center(child: CircularProgressIndicator()),
+                                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
+                            Positioned(right:0,top:20,
+                              child: FloatingActionButton.small(
+                                backgroundColor: Colors.deepPurple.shade200,
+                                onPressed: (){
+                                  provider.removeFromFav(wishModel.productId);
+                                },
+                                child: Icon(IconlyBold.delete,color: Colors.white,size: 20,),
+                              ),
+                            ), Positioned(right:0,bottom:0,
+                              child: FloatingActionButton.small(
+                                backgroundColor: Colors.deepPurple.shade200,
+                                onPressed: ()async{
+                                  final product= await productProvider.getProductById(wishModel.productId);
+                                wishModel.quantity>0?  cartProvider.addToCart(product,'',''):cartProvider.isProductInCart(wishModel.productId)?showMsg(context, 'product is already in cart'):showMsg(context, 'Sorry! product is not available in stock');
+                                },
+                                child: Icon(IconlyBold.buy,color: Colors.white,size: 20,),
+                              ),
+                            ),
+                          ],
+                        ),
                       );
                   },
                   itemCount: provider.wishList.length,

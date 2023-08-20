@@ -8,7 +8,7 @@ const String userFieldId = 'userId';
 const String userFieldDisplayName = 'displayName';
 const String userFieldAddressModel = 'addressModel';
 const String userFieldCreationTime = 'CreationTime';
-const String userFieldGender = 'gender';
+const String userFieldGender = 'userToken';
 const String userFieldAge = 'age';
 const String userFieldPhone = 'phone';
 const String userFieldEmail = 'email';
@@ -19,7 +19,7 @@ class UserModel {
   String? displayName;
   AddressModel? addressModel;
   Timestamp? userCreationTime;
-  String? gender;
+  String? token;
   String? age;
   String? phone;
   String email;
@@ -30,7 +30,7 @@ class UserModel {
       this.displayName,
       this.addressModel,
       this.userCreationTime,
-      this.gender,
+      this.token,
       this.age,
       this.phone,
       this.imageUrl,
@@ -42,7 +42,7 @@ class UserModel {
       userFieldDisplayName: displayName,
       userFieldAddressModel: addressModel?.toMap(),
       userFieldCreationTime: userCreationTime,
-      userFieldGender: gender,
+      userFieldGender: token,
       userFieldAge: age,
       userFieldPhone: phone,
       userFieldEmail: email,
@@ -57,7 +57,7 @@ class UserModel {
             ? null
             : AddressModel.fromMap(map[userFieldAddressModel]),
         userCreationTime: map[userFieldCreationTime],
-        gender: map[userFieldGender],
+        token: map[userFieldGender],
         age: map[userFieldAge],
         phone: map[userFieldPhone],
         email: map[userFieldEmail],

@@ -65,19 +65,29 @@ class ProductProvider extends ChangeNotifier {
     return FirebaseStorage.instance.refFromURL(downloadUrl).delete();
   }
 
-  Future<void> addRating(String productId, double userRateing,UserModel usermodel) async{
-    final ratingmodel= RatingModel(
-        ratingId: usermodel.userId, userModel: usermodel, productId: productId, rating: userRateing);
-    await DbHelper.addRating(ratingmodel);
-    final snapshot= await DbHelper.getRatingsByProduct(productId);
-    final ratingList= List.generate(snapshot.docs.length,
-            (index) => RatingModel.fromMap(snapshot.docs[index].data()));
-    double totalRating =0.0;
-for(var model in ratingList){
-  totalRating +=model.rating;
-}
-final avgRating= totalRating/ratingList.length;
-return DbHelper.updateProductField(productId, { productFieldAvgRating:avgRating});
+  Future<void> addRating(String productId, double userRating, UserModel userModel) async {
+    final ratingModel = RatingModel(
+        ratingId: userModel.userId,
+        userModel: userModel,
+        productId: productId,
+        rating: userRating
+    );
+
+    await DbHelper.addRating(ratingModel);
+
+    final snapshot = await DbHelper.getRatingsByProduct(productId);
+    notifyListeners();
+    final ratingList = List.generate(snapshot.docs.length, (index) => RatingModel.fromMap(snapshot.docs[index].data()));
+
+    double totalRating = 0.0;
+    for (var model in ratingList) {
+      totalRating += model.rating;
+    }
+
+    final avgRating = totalRating / ratingList.length;
+
+    // Update the average rating in the database
+    await DbHelper.updateProductField(productId, {productFieldAvgRating: avgRating});
   }
 
   Future<void> addComment(CommentModel commentModel) async {
@@ -86,7 +96,8 @@ return DbHelper.addComment(commentModel);
   }
 
  Future<List<CommentModel>> getAllcommentsByProduct(String productId) async{
-final snapshot = await DbHelper.getAllcommentsByProduct(productId);
-return List.generate(snapshot.docs.length, (index) => CommentModel.fromMap(snapshot.docs[index].data()));
+   final snapshot = await DbHelper.getAllcommentsByProduct(productId);
+   notifyListeners();
+   return List.generate(snapshot.docs.length, (index) => CommentModel.fromMap(snapshot.docs[index].data()));
   }
 }

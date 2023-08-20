@@ -1,4 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:ecommerce_user/auth/authservice.dart';
+import 'package:ecommerce_user/customwidgets/empty_screen.dart';
 import 'package:ecommerce_user/models/user_model.dart';
 import 'package:ecommerce_user/pages/otp_verification_page.dart';
 import 'package:ecommerce_user/providers/user_provider.dart';
@@ -10,6 +12,7 @@ import 'package:provider/provider.dart';
 
 import '../models/address_model.dart';
 import '../utils/widget_function1.dart';
+import 'login_page.dart';
 
 class UserProfile extends StatefulWidget {
   static const String routeName = '/profile';
@@ -27,7 +30,37 @@ class _UserProfileState extends State<UserProfile> {
     return Scaffold(resizeToAvoidBottomInset: false,
 backgroundColor: Colors.white,
       body: userProvider.userModel == null
-          ? Center(child: Text('Failed to load user data'),)
+          ? Center(child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              EmptyWidget(text: 'Failed to load user data'),
+              InkWell(onTap: () {
+                AuthService.logout().then((value) => Navigator.pushReplacementNamed(context, LoginPage.routeName));
+              },
+
+                child: Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(18.0)
+                          .copyWith(top: 10, bottom: 10),
+                      child: Text('Sign up',
+                          style: GoogleFonts.monda(
+                              fontSize: 12,
+                              color: Colors.white,
+                              fontWeight:
+                              FontWeight.w500)),
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(
+                          Radius.circular(20.0)),
+                      gradient: LinearGradient(colors: [
+                        Colors.deepPurple.shade200,
+                        Colors.lightBlue.shade200,
+                      ]),
+                    )),
+              ),
+            ],
+          ))
           :Column(
             children: [
               Stack(clipBehavior: Clip.none,
@@ -116,28 +149,7 @@ backgroundColor: Colors.white,
                   ),
                 ),
               ),
-              ListTile(
-                leading: Icon(IconlyLight.profile,color: Colors.deepPurple.shade200,),
-                subtitle: Text(
-                  userProvider.userModel!.gender  ??'Not set yet',
-                  style: TextStyle(color: Colors.grey,fontSize: 12,),
-                ),  title:  Text('Gender',
-                  style: GoogleFonts.adamina(fontSize: 12,color: Colors.black54, fontWeight: FontWeight.w900)),
-                trailing: IconButton(
-                  onPressed:()  {
-    showSingleTextInputDialog(context: context, title: 'Gender', onSubmit:(value){
-    userProvider.updateUserField('$userFieldGender', value);
-    });
 
-                  },
-
-
-                  icon:  Icon(
-                    IconlyBold.edit,
-                    color: Colors.deepPurple.shade200,
-                  ),
-                ),
-              ),
               ListTile(
                 leading: Icon(IconlyLight.location,color: Colors.deepPurple.shade200,),
                 subtitle: Text(
@@ -200,7 +212,30 @@ backgroundColor: Colors.white,
                   ),
                 ),
               ),
+              InkWell(onTap: () {
+                AuthService.logout().then((value) => Navigator.pushReplacementNamed(context, LoginPage.routeName));
+              },
 
+                child: Container(
+                    child: Padding(
+                      padding: const EdgeInsets.all(18.0)
+                          .copyWith(top: 10, bottom: 10),
+                      child: Text('Log out',
+                          style: GoogleFonts.monda(
+                              fontSize: 12,
+                              color: Colors.white,
+                              fontWeight:
+                              FontWeight.w500)),
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(
+                          Radius.circular(20.0)),
+                      gradient: LinearGradient(colors: [
+                        Colors.deepPurple.shade200,
+                        Colors.lightBlue.shade200,
+                      ]),
+                    )),
+              ),
             ],
           ),
     );

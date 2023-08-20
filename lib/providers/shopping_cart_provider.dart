@@ -20,8 +20,10 @@ return tag;
 }
 
 int get totalItemInCart => cartList.length;
-  Future<void> addToCart(ProductModel productModel) {
-final cartModel= CartModel(productId: productModel.productId!,categoryId:productModel.category.categoryId! , productName: productModel.productName, productImageUrl: productModel.thumbnailImageUrl, salePrice: num.parse(calculatePriceAfterDiscount(productModel.salePrice,productModel.productDiscount)));
+  Future<void> addToCart(ProductModel productModel, String text, String addExtra) {
+final cartModel= CartModel(productId: productModel.productId!,categoryId:productModel.category.categoryId! , productName: productModel.productName,
+    productImageUrl: productModel.thumbnailImageUrl, extra: addExtra,wish: text,
+    salePrice: num.parse(calculatePriceAfterDiscount(productModel.salePrice,productModel.productDiscount)));
 return DbHelper.addToCart(AuthService.currentUser!.uid, cartModel);
   }
 
@@ -46,9 +48,15 @@ num priceWithQuantity(CartModel cartModel)=>
     }
   }
 
-  void increaseQuantity(CartModel cartModel) {
-    cartModel.quantity+=1;
-    DbHelper.updateCartQuantity(AuthService.currentUser!.uid,cartModel);
+
+  void increaseQuantity(CartModel cartModel, ProductModel product,BuildContext context) {
+    if (cartModel.quantity < product.stock) {
+      cartModel.quantity+=1;
+      DbHelper.updateCartQuantity(AuthService.currentUser!.uid,cartModel);
+    } else {
+      showMsg(context, 'Sorry! limited stock');
+    }
+
   }
   num getCartSubTotal(){
     num total=0;

@@ -59,7 +59,10 @@ class _CheckOutPageState extends State<CheckOutPage> {
   Widget build(BuildContext context) {
     return Scaffold(
 backgroundColor: Colors.deepPurple.shade50,
-      appBar: AppBar(  backgroundColor: Colors.deepPurple.shade300,
+      appBar: AppBar(  actions: [ Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Image.asset('assets/d.png',height: 30,width: 30,),
+      ),],backgroundColor: Colors.deepPurple.shade300,
         foregroundColor: Colors.white,
         elevation: 0,
         title: Text('Checkout',style: GoogleFonts.adamina(fontSize: 15),),
@@ -153,8 +156,9 @@ backgroundColor: Colors.deepPurple.shade50,
             borderRadius: BorderRadius.circular(25)
         ),
           elevation: 2,
-              child: Row(
-                children: [
+              child: FittedBox(
+                child: Row(
+                  children: [
     Padding(
     padding: const EdgeInsets.all(8.0),
     child: ClipRRect(clipBehavior: Clip.hardEdge,
@@ -170,14 +174,18 @@ backgroundColor: Colors.deepPurple.shade50,
     errorWidget: (context, url, error) =>
     const Icon(Icons.panorama),
     ),)),SizedBox(width: 10,),Column( crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [Text(cartModel.productName),
-                    Text('Cocholate flavour',maxLines: 1,overflow: TextOverflow.ellipsis),
-                    Text('${cartModel.quantity}*${cartModel.salePrice}$currencySymbol'),],)
-                ],
+                      children: [Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Text(cartModel.productName,style: GoogleFonts.adamina(color: Colors.black,fontSize: 10,fontWeight: FontWeight.bold)),
+                      ),
+                      Text('${cartModel.extra}+${cartModel.wish}',maxLines: 1,overflow: TextOverflow.ellipsis,style: GoogleFonts.adamina(color: Colors.black,fontSize: 10,fontWeight: FontWeight.normal)),
+                      Text('${cartModel.quantity}*${cartModel.salePrice}$currencySymbol',style: GoogleFonts.adamina(color: Colors.black,fontSize: 10,fontWeight: FontWeight.normal)),],)
+                  ],
 
 
 
-                  ),
+                    ),
+              ),
             ))
             .toList(),
       ),
@@ -320,8 +328,8 @@ await Provider.of<NotificationProvider>(context,listen: false).addNotification(n
     if (userProvider.userModel != null) {
       if (userProvider.userModel!.addressModel != null) {
         final address = userProvider.userModel!.addressModel!;
-        adressLine1Controller.text = address.addressLine1!;
-        adressLine2Controller.text = address.addressLine2!;
+        adressLine1Controller.text = address.addressLine1??'';
+        adressLine2Controller.text = address.addressLine2??'';
         zipCodeController.text = address.zipcode!;
         city = address.city;
       }

@@ -12,6 +12,7 @@ import 'package:ecommerce_user/providers/order_provider.dart';
 import 'package:ecommerce_user/providers/shopping_cart_provider.dart';
 import 'package:ecommerce_user/providers/user_provider.dart';
 import 'package:ecommerce_user/providers/wishList_provide.dart';
+import 'package:ecommerce_user/utils/helper_functions.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -39,6 +40,9 @@ void main() async{
   await FirebaseMessaging.instance.subscribeToTopic('promo');
   await FirebaseMessaging.instance.subscribeToTopic('newproduct');
   print('FCM TOKEN $fcmToken');
+  DateTime dateTime = DateTime.now();
+  String formattedDate = getFormattedDate(dateTime);
+  print(formattedDate);
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(MultiProvider( providers: [
     ChangeNotifierProvider(create: (context)=>UserProvider()),
@@ -90,7 +94,7 @@ super.dispose();
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'E-Commerce(User)',
+      title: 'Lavender bakery',
       theme: ThemeData(
 textTheme: GoogleFonts.nanumMyeongjoTextTheme(),
         primarySwatch: Colors.deepPurple,

@@ -12,7 +12,8 @@ class LauncherScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return
+      Scaffold(
       body: Stack(
         children: [
           Image.asset('assets/app1.jpg',fit: BoxFit.cover,height: double.infinity,),
