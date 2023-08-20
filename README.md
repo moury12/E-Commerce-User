@@ -1,16 +1,3 @@
 # ecommerce_user
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Online Bakery shop
+![InShot_20230820_221425318](https://github.com/moury12/E-Commerce-User/assets/107296533/d22bfb2c-46e9-4a16-a0ef-d9a0b61ca86b)
